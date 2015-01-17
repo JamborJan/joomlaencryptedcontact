@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="3.1.0" client="site" method="upgrade">
+    <name>Encrypted Contact Form for Joomla!</name>
+    <author>https://github.com/JamborJan</author>
+    <version>0.0.1</version>
+    <description>A simple contact form which sends an PGP encrypted message.</description>
+    <files>
+        <filename>mod_encryptedcontact.xml</filename>
+        <filename module="mod_encryptedcontact">mod_encryptedcontact.php</filename>
+        <filename>index.html</filename>
+        <filename>helper.php</filename>
+        <filename>tmpl/default.php</filename>
+        <filename>tmpl/index.html</filename>
+        <filename>kbpgp/kbpgp-1.0.0-min.js</filename>
+        <filename>kbpgp/kbpgp-1.0.0-min.js</filename>
+        <filename>kbpgp/kbpgp-1.0.0.js</filename>
+        <filename>kbpgp/SIGNED.md</filename>
+    </files>
+    <config>
+    </config>
+</extension>
