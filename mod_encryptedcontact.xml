@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="3.1.0" client="site" method="upgrade">
+<extension type="module" version="3.1.0" method="upgrade">
     <name>Encrypted Contact Form for Joomla!</name>
-    <author>https://github.com/JamborJan</author>
     <version>0.0.1</version>
+    <url>https://jambor.pro</url>
+    <creationDate>January 2015</creationDate>
+    <license>GNU General Public License</license>
+    <authorEmail>support@jambor.pro</authorEmail>
+    <authorUrl>https://jambor.pro</authorUrl>
+    <author>Jan Jambor</author>
     <description>A simple contact form which sends an PGP encrypted message.</description>
     <files>
         <filename>mod_encryptedcontact.xml</filename>
