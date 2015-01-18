@@ -47,6 +47,8 @@ Your message.
   			}
 		});
 		
+// This is only a test
+
 		var params = {
   			encrypt_for: jamborjan,
   			msg:         'Name: '+document.getElementById('yourname').value+'\n'+'E-Mail: '+document.getElementById('youremail').value+'\n\n'+document.getElementById('plaintext').value
