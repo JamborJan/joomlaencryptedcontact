@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="3.1.0" method="upgrade">
-    <name>Encrypted Contact Form for Joomla!</name>
-    <version>0.0.1</version>
+<extension type="module" version="2.5" method="upgrade">
+    <name>MOD_ENCRYPTEDCONTACT</name>
+    <version>0.1.0</version>
     <url>https://jambor.pro</url>
     <creationDate>January 2015</creationDate>
-    <license>GNU General Public License</license>
+    <license>GNU General Public License version 2 or later</license>
     <authorEmail>support@jambor.pro</authorEmail>
     <authorUrl>https://jambor.pro</authorUrl>
     <author>Jan Jambor</author>
-    <description>A simple contact form which sends an PGP encrypted message.</description>
+    <description>MOD_ENCRYPTEDCONTACT_DESCRIPTION</description>
     <files>
         <filename>mod_encryptedcontact.xml</filename>
         <filename module="mod_encryptedcontact">mod_encryptedcontact.php</filename>
         <filename>index.html</filename>
         <filename>helper.php</filename>
-        <filename>tmpl/default.php</filename>
-        <filename>tmpl/index.html</filename>
-        <filename>kbpgp/kbpgp-1.0.0-min.js</filename>
-        <filename>kbpgp/kbpgp-1.0.0-min.js</filename>
-        <filename>kbpgp/kbpgp-1.0.0.js</filename>
-        <filename>kbpgp/SIGNED.md</filename>
+        <folder>tmpl</folder>
+        <folder>kbpgp</folder>
+        <folder>language</folder>
     </files>
-    <config>
-    </config>
+    <languages>
+		<language tag="en-GB">language/en-GB/en-GB.mod_encryptedcontact.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.mod_encryptedcontact.sys.ini</language>
+        <language tag="de-DE">language/de-DE/de-DE.mod_encryptedcontact.ini</language>
+        <language tag="de-DE">language/de-DE/de-DE.mod_encryptedcontact.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="email_recipient" type="text" default="" label="MOD_ENCRYPTEDCONTACT_EMAIL_RECIPIENT" description="MOD_ENCRYPTEDCONTACT_EMAIL_RECIPIENT_DESCRIPTION" size="60"/>
+                <field name="email_subject" type="text" default="" label="MOD_ENCRYPTEDCONTACT_EMAIL_SUBJECT" description="MOD_ENCRYPTEDCONTACT_EMAIL_SUBJECT_DESCRIPTION" size="60"/>
+                <field name="pgp_key_radio" type="radio" default="keybase_user" label="PGP_KEY_RADIO" description="PGP_KEY_RADIO_DESCRIPTION">
+					<option value="keybase_user">MOD_ENCRYPTEDCONTACT_KEYBASE_USER</option>
+					<option value="pgp_asc_link">MOD_ENCRYPTEDCONTACT_PGP_ASC_LINK</option>
+					<option value="pgp_txt_key">MOD_ENCRYPTEDCONTACT_PGP_TXT_KEY</option>
+				</field>
+				<field name="keybase_user" type="text" default="" label="MOD_ENCRYPTEDCONTACT_KEYBASE_USER" description="MOD_ENCRYPTEDCONTACT_KEYBASE_USER_DESCRIPTION" size="60"/>
+				<field name="pgp_asc_link" type="text" default="" label="MOD_ENCRYPTEDCONTACT_PGP_ASC_LINK" description="MOD_ENCRYPTEDCONTACT_PGP_ASC_LINK_DESCRIPTION" size="60"/>
+				<field name="pgp_txt_key" type="textarea" default="" label="MOD_ENCRYPTEDCONTACT_PGP_TXT_KEY" description="MOD_ENCRYPTEDCONTACT_PGP_TXT_KEY_DESCRIPTION" rows="20" cols="200"/>
+			</fieldset>
+            <fieldset name="MOD_ENCRYPTEDCONTACT_TEXT_SETTINGS">
+                <field name="welcome_text" type="textarea" default="" label="MOD_ENCRYPTEDCONTACT_WELCOME_TEXT" description="MOD_ENCRYPTEDCONTACT_WELCOME_TEXT_DESCRIPTION" rows="10" cols="60"/>
+                <field name="message_text" type="textarea" default="" label="MOD_ENCRYPTEDCONTACT_MESSAGE_TEXT" description="MOD_ENCRYPTEDCONTACT_MESSAGE_TEXT_DESCRIPTION" rows="10" cols="60"/>
+                <field name="thank_you_text" type="textarea" default="" label="MOD_ENCRYPTEDCONTACT_THANK_YOU_TEXT" description="MOD_ENCRYPTEDCONTACT_THANK_YOU_TEXT_DESCRIPTION" rows="10" cols="60"/>
+            </fieldset>
+		</fields>
+	</config>
+	<params></params>
 </extension>
