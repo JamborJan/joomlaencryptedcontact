@@ -3,6 +3,10 @@ A simple contact form that sends a PGP encrypted message.
 
 This Joomla module makes use of keybas.io Java Script implementation kbpgp. For details check out https://keybase.io/kbpgp
 
+# Download
+
+You can download the latest version here: https://jambor.pro/joomlaencryptedcontact.zip
+
 # Status
 This is my first Joomla module ever. This is the first version of the module. You can see it live working at my personal page https://jambor.pro/en/contact.
 
