@@ -1,13 +1,6 @@
 <?php 
 // No direct access
 defined('_JEXEC') or die;
-
-// We'll ned that later 
-$readonly = 0;
-$yourname = JText::_('MOD_ENCRYPTEDCONTACT_YOUR_NAME');
-$youremail = JText::_('MOD_ENCRYPTEDCONTACT_YOUR_EMAIL');
-$message = $params->get('message_text');
-
 ?>
 
 <?php 
@@ -39,7 +32,13 @@ if(isset($_POST['submit'])){
 	} else {
     	echo '<p>'.$params->get('thank_you_text').'</p>';
 	}
-} 
+} else {
+	// Fill in default text when page is loaded the first time 
+	$readonly = 0;
+	$yourname = JText::_('MOD_ENCRYPTEDCONTACT_YOUR_NAME');
+	$youremail = JText::_('MOD_ENCRYPTEDCONTACT_YOUR_EMAIL');
+	$message = $params->get('message_text');
+}
 ?>
 
 <?php if ($readonly == 0) echo '<p>'.$params->get('welcome_text').'</p>'; ?>
@@ -72,7 +71,7 @@ if(isset($_POST['submit'])){
 
 			var params = {
 	  			encrypt_for: target,
-	  			msg:         'Name: '+document.getElementById('yourname').value+'\n'+'E-Mail: '+document.getElementById('youremail').value+'\n\n'+document.getElementById('message').value
+	  			msg:         'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value
 			};
 
 			kbpgp.box(params, function(err, result_string, result_buffer) {
