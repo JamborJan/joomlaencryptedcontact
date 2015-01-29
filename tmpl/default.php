@@ -1,4 +1,12 @@
 <?php 
+/**
+ * Encrypted Contact Form for Joomla!
+ * 
+ * @package 	mod_encryptedcontact
+ * @link 		https://github.com/JamborJan/joomlaencryptedcontact
+ * @license 	The MIT License (MIT) Copyright (c) 2015 Jan Jambor, see LICENSE
+ */
+
 // No direct access
 defined('_JEXEC') or die;
 
