@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" version="2.5" method="upgrade">
     <name>MOD_ENCRYPTEDCONTACT</name>
-    <version>0.1.0</version>
+    <version>2015.01.29</version>
     <url>https://jambor.pro</url>
     <creationDate>January 2015</creationDate>
     <license>The MIT License (MIT) Copyright (c) 2015 Jan Jambor</license>
