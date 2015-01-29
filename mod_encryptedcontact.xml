@@ -37,6 +37,7 @@
 				<field name="keybase_user" type="text" default="" label="MOD_ENCRYPTEDCONTACT_KEYBASE_USER" description="MOD_ENCRYPTEDCONTACT_KEYBASE_USER_DESCRIPTION" size="60"/>
 				<field name="pgp_asc_link" type="text" default="" label="MOD_ENCRYPTEDCONTACT_PGP_ASC_LINK" description="MOD_ENCRYPTEDCONTACT_PGP_ASC_LINK_DESCRIPTION" size="60"/>
 				<field name="pgp_txt_key" type="textarea" default="" label="MOD_ENCRYPTEDCONTACT_PGP_TXT_KEY" description="MOD_ENCRYPTEDCONTACT_PGP_TXT_KEY_DESCRIPTION" rows="20" cols="200"/>
+                <field name="show_pgp_key" type="checkbox" label="MOD_ENCRYPTEDCONTACT_SHOW_PGP_KEY" description="MOD_ENCRYPTEDCONTACT_SHOW_PGP_KEY_DESCRIPTION" value="1" default="0" />
 			</fieldset>
             <fieldset name="MOD_ENCRYPTEDCONTACT_TEXT_SETTINGS">
                 <field name="welcome_text" type="textarea" default="MOD_ENCRYPTEDCONTACT_DEFAULT_WELCOME" label="MOD_ENCRYPTEDCONTACT_WELCOME_TEXT" description="MOD_ENCRYPTEDCONTACT_WELCOME_TEXT_DESCRIPTION" rows="10" cols="60"/>
@@ -44,6 +45,7 @@
                 <field name="thank_you_text" type="textarea" default="MOD_ENCRYPTEDCONTACT_DEFAULT_THANK_YOU" label="MOD_ENCRYPTEDCONTACT_THANK_YOU_TEXT" description="MOD_ENCRYPTEDCONTACT_THANK_YOU_TEXT_DESCRIPTION" rows="10" cols="60"/>
                 <field name="font_color" type="color" default="#000" label="MOD_ENCRYPTEDCONTACT_FONT_COLOR" description="MOD_ENCRYPTEDCONTACT_FONT_COLOR_DESCRIPTION"/>
                 <field name="bg_color" type="color" default="#fff" label="MOD_ENCRYPTEDCONTACT_BG_COLOR" description="MOD_ENCRYPTEDCONTACT_BG_COLOR_DESCRIPTION"/>
+                <field name="show_pgp_text" type="textarea" default="MOD_ENCRYPTEDCONTACT_SHOW_PGP_TEXT_DEFAULT" label="MOD_ENCRYPTEDCONTACT_SHOW_PGP_TEXT" description="MOD_ENCRYPTEDCONTACT_SHOW_PGP_TEXT_DESCRIPTION" rows="10" cols="60"/>
             </fieldset>
 		</fields>
 	</config>

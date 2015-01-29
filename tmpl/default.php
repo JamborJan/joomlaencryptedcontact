@@ -1,6 +1,10 @@
 <?php 
 // No direct access
 defined('_JEXEC') or die;
+
+$show_pgp_key = $params->get('show_pgp_key');
+$show_pgp_text = $params->get('show_pgp_text');
+
 ?>
 
 <?php 
@@ -44,7 +48,7 @@ if(isset($_POST['submit'])){
 <?php if ($readonly == 0) echo '<p>'.$params->get('welcome_text').'</p>'; ?>
 
 <?php
-	
+	// Button design for the form
 	$font_color = $params->get('font_color');
 	$bg_color = $params->get('bg_color');
 
@@ -72,10 +76,10 @@ if(isset($_POST['submit'])){
 	<input style="<?php echo $button_design; ?>" type="button" id="encryptmessage" name="encryptmessage" onclick="encryptMessage();" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_ENC_MESSAGE_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
 	<input style="<?php echo $button_design; ?>" name="submit" type="submit" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_SUBMIT_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/><br/>
 	<!-- START area to JS-->
-	<textarea name="pgppubkey" id="pgppubkey" style="width: 100%; height: 150px; display: none;" READONLY><?php echo $pgppubkey; ?></textarea>
+	<?php if ($show_pgp_key == 1) {echo '<br/><br/>'.$show_pgp_text.'<br/>';}?>
+	<textarea name="pgppubkey" id="pgppubkey" style="width: 100%; height: 150px; <?php if ($show_pgp_key != 1) {echo 'display: none;';} ?>" onClick="this.setSelectionRange(0, this.value.length);" READONLY><?php echo $pgppubkey; ?></textarea>
 	<!-- END transfer area to JS-->
 </form>
-
 
 <script type="text/javascript" src="modules/mod_encryptedcontact/kbpgp/kbpgp-1.0.0.js"> </script>
 <script type="text/javascript">
