@@ -1,15 +1,19 @@
 # Encrypted Contact Form for Joomla!
 A simple contact form that sends a PGP encrypted message.
 
-This module uses the PGP Java Script implementation of <a href="https://keybase.io/" target="_blank">keybas.io</a>'s kbpgp. It's actively maintained by <a href="https://keybase.io/" target="_blank">keybas.io</a> and under a BSD license.
+This module uses the PGP Java Script implementation of keybas.io's kbpgp. It's actively maintained by keybas.io and under a BSD license.
+
+- https://keybase.io/
+- https://keybase.io/kbpgp
+- https://en.wikipedia.org/wiki/BSD_licenses
 
 You can use this module with 3 different options.
 
 keybase.io
-If you have a keybas.io account, simply provide your user name and the module we retrieve your public PGP key from there. As a keybas.io account can only be created with an invitation these days feel free to contact me. As long as I have invites I'm happy to share them.
+If you have a keybas.io account, simply provide your user name and the module we retrieve your public PGP key from there. As a keybas.io account can only be created with an invitation these days feel free to contact me. As long as I have invites I'm happy to share them (https://jambor.pro/contact).
 
 Link to your pgp.asc file
-You can also put your public PGP key on your webserver or any other accessible place. Simply put the link to the file in the respective field and the module will retrieve the key from there. This is pgpasc.org's approach. If you want to learn more about alternative key distribution visit their web page at pgpasc.org.
+You can also put your public PGP key on your webserver or any other accessible place. Simply put the link to the file in the respective field and the module will retrieve the key from there. This is pgpasc.org's approach. If you want to learn more about alternative key distribution visit their web page at pgpasc.org (http://pgpasc.org/).
 
 Text PGP Key
 You can also copy and paste the text version of your key in the module settings. The module will then use this key.
