@@ -43,14 +43,34 @@ if(isset($_POST['submit'])){
 
 <?php if ($readonly == 0) echo '<p>'.$params->get('welcome_text').'</p>'; ?>
 
+<?php
+	
+	$font_color = $params->get('font_color');
+	$bg_color = $params->get('bg_color');
+
+	$button_design = '
+		height: 60px;
+		margin: 10px 0px 10px 0px;
+		border: 1px solid '.$bg_color.';
+		border-radius: 5px;
+		color: '.$font_color.';
+		font-weight: bold;
+		padding: 10px 20px;
+		font-size: 16px;
+		background: '.$bg_color.';
+		-webkit-appearance: none;
+		-moz-appearance: none;
+	';
+?>
+
 <form  name="formencryptmessage" method="post">
-	<input type="text" id="yourname" name="yourname" value="<?php echo $yourname; ?>" onClick="this.select();" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
-	<input type="text" id="youremail" name="youremail" value="<?php echo $youremail; ?>" onClick="this.select();" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
+	<input type="text" id="yourname" name="yourname" value="<?php echo $yourname; ?>" onClick="this.setSelectionRange(0, this.value.length);" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
+	<input type="text" id="youremail" name="youremail" value="<?php echo $youremail; ?>" onClick="this.setSelectionRange(0, this.value.length);" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
 	<br/><br/>
-	<textarea id="message" name="message" style="width: 100%; height: 150px" onClick="this.select();" <?php if ($readonly == 1) echo ' DISABLED'; ?>><?php echo $message; ?></textarea>
+	<textarea id="message" name="message" style="width: 100%; height: 150px" onClick="this.setSelectionRange(0, this.value.length);" <?php if ($readonly == 1) echo ' DISABLED'; ?>><?php echo $message; ?></textarea>
 	<br/><br/>
-	<input type="button" id="encryptmessage" name="encryptmessage" onclick="encryptMessage();" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_ENC_MESSAGE_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
-	<input name="submit" type="submit" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_SUBMIT_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/><br/>
+	<input style="<?php echo $button_design; ?>" type="button" id="encryptmessage" name="encryptmessage" onclick="encryptMessage();" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_ENC_MESSAGE_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
+	<input style="<?php echo $button_design; ?>" name="submit" type="submit" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_SUBMIT_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/><br/>
 	<!-- START area to JS-->
 	<textarea name="pgppubkey" id="pgppubkey" style="width: 100%; height: 150px; display: none;" READONLY><?php echo $pgppubkey; ?></textarea>
 	<!-- END transfer area to JS-->
