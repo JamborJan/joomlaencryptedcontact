@@ -39,9 +39,9 @@
 				<field name="pgp_txt_key" type="textarea" default="" label="MOD_ENCRYPTEDCONTACT_PGP_TXT_KEY" description="MOD_ENCRYPTEDCONTACT_PGP_TXT_KEY_DESCRIPTION" rows="20" cols="200"/>
 			</fieldset>
             <fieldset name="MOD_ENCRYPTEDCONTACT_TEXT_SETTINGS">
-                <field name="welcome_text" type="textarea" default="" label="MOD_ENCRYPTEDCONTACT_WELCOME_TEXT" description="MOD_ENCRYPTEDCONTACT_WELCOME_TEXT_DESCRIPTION" rows="10" cols="60"/>
-                <field name="message_text" type="textarea" default="" label="MOD_ENCRYPTEDCONTACT_MESSAGE_TEXT" description="MOD_ENCRYPTEDCONTACT_MESSAGE_TEXT_DESCRIPTION" rows="10" cols="60"/>
-                <field name="thank_you_text" type="textarea" default="" label="MOD_ENCRYPTEDCONTACT_THANK_YOU_TEXT" description="MOD_ENCRYPTEDCONTACT_THANK_YOU_TEXT_DESCRIPTION" rows="10" cols="60"/>
+                <field name="welcome_text" type="textarea" default="MOD_ENCRYPTEDCONTACT_DEFAULT_WELCOME" label="MOD_ENCRYPTEDCONTACT_WELCOME_TEXT" description="MOD_ENCRYPTEDCONTACT_WELCOME_TEXT_DESCRIPTION" rows="10" cols="60"/>
+                <field name="message_text" type="textarea" default="MOD_ENCRYPTEDCONTACT_DEFAULT_MESSAGE_TEXT" label="MOD_ENCRYPTEDCONTACT_MESSAGE_TEXT" description="MOD_ENCRYPTEDCONTACT_MESSAGE_TEXT_DESCRIPTION" rows="10" cols="60"/>
+                <field name="thank_you_text" type="textarea" default="MOD_ENCRYPTEDCONTACT_DEFAULT_THANK_YOU" label="MOD_ENCRYPTEDCONTACT_THANK_YOU_TEXT" description="MOD_ENCRYPTEDCONTACT_THANK_YOU_TEXT_DESCRIPTION" rows="10" cols="60"/>
             </fieldset>
 		</fields>
 	</config>
