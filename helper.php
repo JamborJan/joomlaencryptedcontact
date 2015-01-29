@@ -4,7 +4,7 @@
  * 
  * @package     mod_encryptedcontact
  * @link        https://github.com/JamborJan/joomlaencryptedcontact
- * @license     The MIT License (MIT) Copyright (c) 2015 Jan Jambor, see LICENSE
+ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html (c) 2015 Jan Jambor, see LICENSE
  */
 
 class mod_encryptedcontactHelper

@@ -4,7 +4,8 @@
     <version>2015.01.29</version>
     <url>https://jambor.pro</url>
     <creationDate>January 2015</creationDate>
-    <license>The MIT License (MIT) Copyright (c) 2015 Jan Jambor</license>
+    <copyright>(c) 2015 Jan Jambor, see LICENSE</copyright>
+    <license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
     <authorEmail>support@jambor.pro</authorEmail>
     <authorUrl>https://jambor.pro</authorUrl>
     <author>Jan Jambor</author>
