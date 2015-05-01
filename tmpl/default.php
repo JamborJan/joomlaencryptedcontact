@@ -34,7 +34,11 @@ if(isset($_POST['submit'])){
 	$mailer->setSender($sender);
 	$recipient = $params->get('email_recipient');
 	$mailer->addRecipient($recipient);
-	$body = $message;
+	if (substr($message, 0, 27 ) != '-----BEGIN PGP MESSAGE-----') {
+		$body = "Name: ".$yourname."\r\n E-Mail: ".$youremail."\r\n\r\n".$message;
+	} else {
+		$body = $message;
+	}
 	$mailer->setSubject($params->get('email_subject'));
 	$mailer->setBody($body);
 	$send = $mailer->Send();
