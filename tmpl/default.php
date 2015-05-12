@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 
 $show_pgp_key = $params->get('show_pgp_key');
 $show_pgp_text = $params->get('show_pgp_text');
+$enable_file_upload = $params->get('enable_file_upload');
 
 ?>
 
@@ -84,7 +85,15 @@ if(isset($_POST['submit'])){
 	<input type="text" id="youremail" name="youremail" value="<?php echo $youremail; ?>" onClick="this.setSelectionRange(0, this.value.length);" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
 	<br/><br/>
 	<textarea id="message" name="message" style="width: 100%; height: 150px" onClick="this.setSelectionRange(0, this.value.length);" <?php if ($readonly == 1) echo ' DISABLED'; ?>><?php echo $message; ?></textarea>
-	<br/><br/>
+	<br/>
+	<!-- START file upload-->
+	<?php if ($enable_file_upload == 1) {
+		echo $params->get('upload_text').' <br />';
+		echo '<input type="file" id="upload_file" name="upload_file" size="40">';
+	}?>
+
+	<!-- END file upload-->
+	<br/>
 	<input style="<?php echo $button_design; ?>" type="button" id="encryptmessage" name="encryptmessage" onclick="encryptMessage();" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_ENC_MESSAGE_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
 	<input style="<?php echo $button_design; ?>" name="submit" type="submit" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_SUBMIT_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/><br/>
 	<!-- START area to JS-->
@@ -100,6 +109,29 @@ if(isset($_POST['submit'])){
 
 		var pgppubkey = document.getElementById('pgppubkey').value;
 
+		var control = document.getElementById("upload_file");
+		if (control) {
+			var i = 0, files = control.files, len = files.length;
+			console.log("Amount of files: " + len);
+			for (; i < len; i++) {
+		        console.log("Filename: " + files[i].name);
+		        console.log("Type: " + files[i].type);
+		        console.log("Size: " + files[i].size + " bytes");
+			    if (len == 1) {
+			    	// I know this is stupid now, but needed later if multiple files are supported
+			    	var r = new FileReader();
+			    	r.readAsBinaryString(files[i]);
+			    	r.onloadend = function(file) {
+	  					var buffer = new kbpgp.Buffer(r.result);
+	  					//
+	  					// TODO
+	  					// Now we need to get this behind the message before encrypting
+	  					//
+					};
+			    }
+		    }
+		}
+
 		kbpgp.KeyManager.import_from_armored_pgp({
 		  armored: pgppubkey
 		}, function(err, target) {
@@ -107,12 +139,12 @@ if(isset($_POST['submit'])){
 
 			var params = {
 	  			encrypt_for: target,
-	  			msg:         'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value
+	  			msg:         'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value // +buffer.toString('base64')
 			};
 
 			kbpgp.box(params, function(err, result_string, result_buffer) {
 				document.getElementById('message').value = result_string;
-	  			console.log(err, result_string, result_buffer);
+	  			// console.log(err, result_string, result_buffer);
 			});
 
 		  } else {
