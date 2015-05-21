@@ -94,7 +94,7 @@ if(isset($_POST['submit'])){
 
 	<!-- END file upload-->
 	<br/>
-	<input style="<?php echo $button_design; ?>" type="button" id="encryptmessage" name="encryptmessage" onclick="encryptMessage();" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_ENC_MESSAGE_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
+	<input style="<?php echo $button_design; ?>" type="button" id="encryptmessage" name="encryptmessage" onclick="clickButton();" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_ENC_MESSAGE_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
 	<input style="<?php echo $button_design; ?>" name="submit" type="submit" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_SUBMIT_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/><br/>
 	<!-- START area to JS-->
 	<?php if ($show_pgp_key == 1) {echo '<br/><br/>'.$show_pgp_text.'<br/>';}?>
@@ -105,10 +105,40 @@ if(isset($_POST['submit'])){
 <script type="text/javascript" src="modules/mod_encryptedcontact/kbpgp/kbpgp-1.0.0.js"> </script>
 <script type="text/javascript">
 
-	function encryptMessage() {
+	function clickButton(){
+		var message = 'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value;
+		message = encryptMessage(message);
+		document.getElementById('message').value = message;
+	}
+
+	function encryptMessage(text){
 
 		var pgppubkey = document.getElementById('pgppubkey').value;
 
+		kbpgp.KeyManager.import_from_armored_pgp({
+		  armored: pgppubkey
+		}, function(err, target) {
+		  if (!err) {
+
+			var params = {
+	  			encrypt_for: target,
+	  			msg:         text
+			};
+
+			kbpgp.box(params, function(err, result_string, result_buffer) {
+				// document.getElementById('message').value = result_string;
+				// Dit muss hier woanders hin weil es nicht aus der geschachtelten funktion raus führt
+				return result_string;
+			});
+
+		  } else {
+		    console.log(err);		  	
+		  }
+		});
+	}
+
+	/*
+	function dummy(){
 		var control = document.getElementById("upload_file");
 		if (control) {
 			var i = 0, files = control.files, len = files.length;
@@ -123,36 +153,11 @@ if(isset($_POST['submit'])){
 			    	r.readAsBinaryString(files[i]);
 			    	r.onloadend = function(file) {
 	  					var buffer = new kbpgp.Buffer(r.result);
-	  					//
-	  					// TODO
-	  					// Now we need to get this behind the message before encrypting
-	  					//
+	  					message = message+'\r\n'+buffer;
 					};
 			    }
 		    }
 		}
-
-		kbpgp.KeyManager.import_from_armored_pgp({
-		  armored: pgppubkey
-		}, function(err, target) {
-		  if (!err) {
-
-			var params = {
-	  			encrypt_for: target,
-	  			msg:         'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value // +buffer.toString('base64')
-			};
-
-			kbpgp.box(params, function(err, result_string, result_buffer) {
-				document.getElementById('message').value = result_string;
-	  			// console.log(err, result_string, result_buffer);
-			});
-
-		  } else {
-		    console.log(err);		  	
-		  }
-		});
-		
-	}
+	} */
 	
 </script>
-
