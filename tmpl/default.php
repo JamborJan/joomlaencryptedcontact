@@ -91,27 +91,23 @@ if(isset($_POST['submit'])){
 		echo $params->get('upload_text').' <br />';
 		echo '<input type="file" id="upload_file" name="upload_file" size="40">';
 	}?>
-
 	<!-- END file upload-->
 	<br/>
-	<input style="<?php echo $button_design; ?>" type="button" id="encryptmessage" name="encryptmessage" onclick="clickButton();" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_ENC_MESSAGE_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
+	<input style="<?php echo $button_design; ?>" type="button" id="encryptmessage" name="encryptmessage" onclick="encryptMessage();" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_ENC_MESSAGE_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
 	<input style="<?php echo $button_design; ?>" name="submit" type="submit" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_SUBMIT_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/><br/>
 	<!-- START area to JS-->
 	<?php if ($show_pgp_key == 1) {echo '<br/><br/>'.$show_pgp_text.'<br/>';}?>
 	<textarea name="pgppubkey" id="pgppubkey" style="width: 100%; height: 150px; <?php if ($show_pgp_key != 1) {echo 'display: none;';} ?>" onClick="this.setSelectionRange(0, this.value.length);" READONLY><?php echo $pgppubkey; ?></textarea>
 	<!-- END transfer area to JS-->
+	<!-- START area FS -->
+	<textarea name="file" id="file" style="width: 100%; height: 150px; <?php if ($show_pgp_key != 1) {echo 'display: none;';} ?>" onClick="this.setSelectionRange(0, this.value.length);" READONLY></textarea>
+	<!-- END area FS-->
 </form>
 
-<script type="text/javascript" src="modules/mod_encryptedcontact/kbpgp/kbpgp-1.0.0.js"> </script>
+<script type="text/javascript" src="modules/mod_encryptedcontact/kbpgp/kbpgp-2.0.8.js"> </script>
 <script type="text/javascript">
 
-	function clickButton(){
-		var message = 'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value;
-		message = encryptMessage(message);
-		document.getElementById('message').value = message;
-	}
-
-	function encryptMessage(text){
+	function encryptMessage(){
 
 		var pgppubkey = document.getElementById('pgppubkey').value;
 
@@ -120,44 +116,66 @@ if(isset($_POST['submit'])){
 		}, function(err, target) {
 		  if (!err) {
 
-			var params = {
-	  			encrypt_for: target,
-	  			msg:         text
-			};
+			var control = document.getElementById("upload_file");
+			if (control) {
+				var i = 0, files = control.files, len = files.length;
+				console.log("Amount of files: " + len);
+				for (; i < len; i++) {
+			        console.log("Filename: " + files[i].name);
+			        console.log("Type: " + files[i].type);
+			        console.log("Size: " + files[i].size + " bytes");
 
-			kbpgp.box(params, function(err, result_string, result_buffer) {
-				// document.getElementById('message').value = result_string;
-				// Dit muss hier woanders hin weil es nicht aus der geschachtelten funktion raus führt
-				return result_string;
-			});
+					var header = 'Content-Disposition: ATTACHMENT;'+'\r\n';
+					header = header+'filename="'+files[i].name+'"'+'\r\n';
+					header = header+'Content-Type: '+files[i].type+';'+'\r\n';
+					header = header+'name="'+files[i].name+'"'+'\r\n';
+					header = header+'Content-Transfer-Encoding: BASE64'+'\r\n\r\n';
+				    document.getElementById('file').value = header;
 
-		  } else {
-		    console.log(err);		  	
-		  }
+				    if (len == 1) {
+
+						var buffer = "init";
+				    	var reader = new FileReader();
+						reader.onload = function(event) {
+						    var contents = event.target.result;
+						    contents = btoa(contents);
+						    document.getElementById('file').value = document.getElementById('file').value+contents;
+						};
+
+						reader.onloadend = function(event) {
+							var params = {
+					  			encrypt_for: target,
+					  			msg:         'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value+'\r\n\r\n'+document.getElementById('file').value
+							};
+
+							kbpgp.box(params, function(err, result_string, result_buffer) {
+								document.getElementById('message').value = result_string;
+							});
+						}
+
+						reader.onerror = function(event) {
+						    console.error("File could not be read! Code " + event.target.error.code);
+						};
+
+						reader.readAsBinaryString(files[i]);
+				    } 
+		    	}
+			} else {
+
+			  	var params = {
+					encrypt_for: target,
+					msg:         'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value
+				};
+
+				kbpgp.box(params, function(err, result_string, result_buffer) {
+					document.getElementById('message').value = result_string;
+				});
+
+			    console.log(err);		  	
+			  }
+		  } 
 		});
-	}
 
-	/*
-	function dummy(){
-		var control = document.getElementById("upload_file");
-		if (control) {
-			var i = 0, files = control.files, len = files.length;
-			console.log("Amount of files: " + len);
-			for (; i < len; i++) {
-		        console.log("Filename: " + files[i].name);
-		        console.log("Type: " + files[i].type);
-		        console.log("Size: " + files[i].size + " bytes");
-			    if (len == 1) {
-			    	// I know this is stupid now, but needed later if multiple files are supported
-			    	var r = new FileReader();
-			    	r.readAsBinaryString(files[i]);
-			    	r.onloadend = function(file) {
-	  					var buffer = new kbpgp.Buffer(r.result);
-	  					message = message+'\r\n'+buffer;
-					};
-			    }
-		    }
-		}
-	} */
+	}
 	
 </script>
