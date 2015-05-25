@@ -44,7 +44,6 @@ if(isset($_POST['submit'])){
 	$mailer->setBody($body);
 	$send = $mailer->Send();
 	if ( $send !== true ) {
-	    // echo 'Error sending email: ' . $send->__toString();
 	    echo '<p>Sorry your E-Mail was not send. We will try to fix that.</p>';
 	} else {
     	echo '<p>'.$params->get('thank_you_text').'</p>';
@@ -125,11 +124,46 @@ if(isset($_POST['submit'])){
 			        console.log("Type: " + files[i].type);
 			        console.log("Size: " + files[i].size + " bytes");
 
-					var header = 'Content-Disposition: ATTACHMENT;'+'\r\n';
-					header = header+'filename="'+files[i].name+'"'+'\r\n';
+			        var boundary00 = "joomlaencryptedcontact=_01307551-B1DE-4CF5-B3E5-FED85129E5FC";
+			        var boundary01 = "joomlaencryptedcontact=_28F0F97B-9710-4822-B656-216F60B1D1B3";
+			        var boundary02 = "joomlaencryptedcontact=_D2FB87C0-DEC2-4202-B600-986D6ABBC502";
+
+					var header = 'Content-Type: multipart/alternative;'+'\r\n';
+					header = header+'	boundary="'+boundary01+'"'+'\r\n';
+					header = header+'\r\n';
+					header = header+'\r\n';
+					header = header+'--'+boundary01+'\r\n';
+					header = header+'Content-Transfer-Encoding: 8bit'+'\r\n';
+					header = header+'Content-Type: text/plain;'+'\r\n';
+					header = header+'	charset=utf-8'+'\r\n';
+					header = header+'\r\n';
+					header = header+'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value;
+					header = header+'\r\n';
+					header = header+'\r\n';
+					header = header+'--'+boundary01+'\r\n';
+					header = header+'Content-Type: multipart/related;'+'\r\n';
+					header = header+'	type="text/html";'+'\r\n';
+					header = header+'	boundary="'+boundary02+'"'+'\r\n';
+					header = header+'\r\n';
+					header = header+'\r\n';
+					header = header+'--'+boundary02+'\r\n';
+					header = header+'Content-Transfer-Encoding: 8bit'+'\r\n';
+					header = header+'Content-Type: text/html;'+'\r\n';
+					header = header+'	charset=utf-8'+'\r\n';
+					header = header+'\r\n';
+					header = header+'Name: '+document.getElementById('yourname').value+'<br />E-Mail: <a href="mailto:'+document.getElementById('youremail').value;
+					header = header+'">'+document.getElementById('youremail').value+'</a><br /><br />'+document.getElementById('message').value+'<br /><div><img height="321" width="329" apple-width="yes" apple-height="yes" apple-inline="yes" id="80780FAF-A0BD-4000-95DC-4DB055F2077E"';
+					header = header+' src="cid:A04DCB35-8607-4755-A4EC-420853717FD9@joomlaencryptedcontact"></div>';
+					header = header+'--'+boundary02+'\r\n';
+					header = header+'Content-Transfer-Encoding: base64'+'\r\n';
+					header = header+'Content-Disposition: attachment;'+'\r\n';
+					header = header+'	filename='+files[i].name+'\r\n';
 					header = header+'Content-Type: '+files[i].type+';'+'\r\n';
-					header = header+'name="'+files[i].name+'"'+'\r\n';
-					header = header+'Content-Transfer-Encoding: BASE64'+'\r\n\r\n';
+					header = header+'	x-unix-mode=0644;'+'\r\n';
+					header = header+'	name="'+files[i].name+'"'+'\r\n';
+					header = header+'Content-Id: <A04DCB35-8607-4755-A4EC-420853717FD9@joomlaencryptedcontact>'+'\r\n';
+					header = header+'\r\n';
+
 				    document.getElementById('file').value = header;
 
 				    if (len == 1) {
@@ -143,13 +177,41 @@ if(isset($_POST['submit'])){
 						};
 
 						reader.onloadend = function(event) {
+							
+							var footer = '\r\n';
+							footer = footer+'--'+boundary02+'--\r\n';
+							footer = footer+'\r\n';
+							footer = footer+'--'+boundary01+'--\r\n';
+							document.getElementById('file').value = document.getElementById('file').value+footer;
+
 							var params = {
 					  			encrypt_for: target,
-					  			msg:         'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value+'\r\n\r\n'+document.getElementById('file').value
+					  			msg:         document.getElementById('file').value
 							};
 
 							kbpgp.box(params, function(err, result_string, result_buffer) {
 								document.getElementById('message').value = result_string;
+
+								// Dummy Test
+								document.getElementById('message').value = document.getElementById('file').value;
+
+								var wrap='--'+boundary00+'\r\n';
+								wrap = wrap + 'Content-Transfer-Encoding: 8BIT'+'\r\n';
+								wrap = wrap + 'Content-Type: APPLICATION/PGP-ENCRYPTED'+'\r\n';
+								wrap = wrap + '\r\n';
+								wrap = wrap + 'Version: 1'+'\r\n';
+								wrap = wrap + '\r\n';
+								wrap = wrap + '--'+boundary00+'\r\n';
+								wrap = wrap + 'Content-Disposition: attachment;'+'\r\n';
+								wrap = wrap + '	filename=encrypted.asc'+'\r\n';
+								wrap = wrap + 'Content-Type: APPLICATION/OCTET-STREAM;'+'\r\n';
+								wrap = wrap + '	name=encrypted.asc'+'\r\n';
+								wrap = wrap + 'Content-Transfer-Encoding: 8BIT'+'\r\n';
+								wrap = wrap + '\r\n';
+								wrap = wrap+document.getElementById('message').value;
+								wrap = wrap + '\r\n';
+								wrap = wrap + '--'+boundary00+'--\n';
+								document.getElementById('message').value = wrap;
 							});
 						}
 
@@ -158,6 +220,7 @@ if(isset($_POST['submit'])){
 						};
 
 						reader.readAsBinaryString(files[i]);
+
 				    } 
 		    	}
 			} else {

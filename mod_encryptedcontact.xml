@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" version="2.5" method="upgrade">
     <name>MOD_ENCRYPTEDCONTACT</name>
-    <version>2015.05.22</version>
+    <version>2015.05.25</version>
     <url>https://jambor.pro</url>
     <creationDate>May 2015</creationDate>
     <copyright>(c) 2015 Jan Jambor, see LICENSE</copyright>
