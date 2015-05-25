@@ -192,9 +192,6 @@ if(isset($_POST['submit'])){
 							kbpgp.box(params, function(err, result_string, result_buffer) {
 								document.getElementById('message').value = result_string;
 
-								// Dummy Test
-								document.getElementById('message').value = document.getElementById('file').value;
-
 								var wrap='--'+boundary00+'\r\n';
 								wrap = wrap + 'Content-Transfer-Encoding: 8BIT'+'\r\n';
 								wrap = wrap + 'Content-Type: APPLICATION/PGP-ENCRYPTED'+'\r\n';
