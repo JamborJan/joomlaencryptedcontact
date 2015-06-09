@@ -106,6 +106,16 @@ if(isset($_POST['submit'])){
 <script type="text/javascript" src="modules/mod_encryptedcontact/kbpgp/kbpgp-2.0.8.js"> </script>
 <script type="text/javascript">
 
+	function guid() {
+	  function s4() {
+	    return Math.floor((1 + Math.random()) * 0x10000)
+	      .toString(16)
+	      .substring(1);
+	  }
+	  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+	    s4() + '-' + s4() + s4() + s4();
+	}
+
 	function encryptMessage(){
 
 		var pgppubkey = document.getElementById('pgppubkey').value;
@@ -120,50 +130,30 @@ if(isset($_POST['submit'])){
 				var i = 0, files = control.files, len = files.length;
 				console.log("Amount of files: " + len);
 				for (; i < len; i++) {
+
 			        console.log("Filename: " + files[i].name);
 			        console.log("Type: " + files[i].type);
 			        console.log("Size: " + files[i].size + " bytes");
 
-			        var boundary00 = "joomlaencryptedcontact=_01307551-B1DE-4CF5-B3E5-FED85129E5FC";
-			        var boundary01 = "joomlaencryptedcontact=_28F0F97B-9710-4822-B656-216F60B1D1B3";
-			        var boundary02 = "joomlaencryptedcontact=_D2FB87C0-DEC2-4202-B600-986D6ABBC502";
+			        var separator = guid();
+			        var message = 'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value;
 
-					var header = 'Content-Type: multipart/alternative;'+'\r\n';
-					header = header+'	boundary="'+boundary01+'"'+'\r\n';
-					header = header+'\r\n';
-					header = header+'\r\n';
-					header = header+'--'+boundary01+'\r\n';
-					header = header+'Content-Transfer-Encoding: 8bit'+'\r\n';
-					header = header+'Content-Type: text/plain;'+'\r\n';
-					header = header+'	charset=utf-8'+'\r\n';
-					header = header+'\r\n';
-					header = header+'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value;
-					header = header+'\r\n';
-					header = header+'\r\n';
-					header = header+'--'+boundary01+'\r\n';
-					header = header+'Content-Type: multipart/related;'+'\r\n';
-					header = header+'	type="text/html";'+'\r\n';
-					header = header+'	boundary="'+boundary02+'"'+'\r\n';
-					header = header+'\r\n';
-					header = header+'\r\n';
-					header = header+'--'+boundary02+'\r\n';
-					header = header+'Content-Transfer-Encoding: 8bit'+'\r\n';
-					header = header+'Content-Type: text/html;'+'\r\n';
-					header = header+'	charset=utf-8'+'\r\n';
-					header = header+'\r\n';
-					header = header+'Name: '+document.getElementById('yourname').value+'<br />E-Mail: <a href="mailto:'+document.getElementById('youremail').value;
-					header = header+'">'+document.getElementById('youremail').value+'</a><br /><br />'+document.getElementById('message').value+'<br /><div><img height="321" width="329" apple-width="yes" apple-height="yes" apple-inline="yes" id="80780FAF-A0BD-4000-95DC-4DB055F2077E"';
-					header = header+' src="cid:A04DCB35-8607-4755-A4EC-420853717FD9@joomlaencryptedcontact"></div>';
-					header = header+'--'+boundary02+'\r\n';
+				    var header = 'Content-Type: multipart/mixed; boundary="'+separator +'"'+'\r\n'+'\r\n';
+				    header = header+'Content-Transfer-Encoding: 7bit'+'\r\n';
+				    header = header+'This is a MIME encoded message.'+'\r\n'+'\r\n';
+
+				    // message
+				    header = header+'--'+separator +'\r\n';
+				    header = header+'Content-Type: text/plain; charset="iso-8859-1"'+'\r\n';
+				    header = header+'Content-Transfer-Encoding: 8bit'+'\r\n'+'\r\n';
+				    header = header+message+'\r\n'+'\r\n';
+
+				    // attachment
+				    header = header+'--'+separator +'\r\n';
+				    header = header+'Content-Type: application/octet-stream; name="'+files[i].name+'"'+'\r\n';
 					header = header+'Content-Transfer-Encoding: base64'+'\r\n';
 					header = header+'Content-Disposition: attachment;'+'\r\n';
-					header = header+'	filename='+files[i].name+'\r\n';
-					header = header+'Content-Type: '+files[i].type+';'+'\r\n';
-					header = header+'	x-unix-mode=0644;'+'\r\n';
-					header = header+'	name="'+files[i].name+'"'+'\r\n';
-					header = header+'Content-Id: <A04DCB35-8607-4755-A4EC-420853717FD9@joomlaencryptedcontact>'+'\r\n';
-					header = header+'\r\n';
-
+					
 				    document.getElementById('file').value = header;
 
 				    if (len == 1) {
@@ -178,10 +168,8 @@ if(isset($_POST['submit'])){
 
 						reader.onloadend = function(event) {
 							
-							var footer = '\r\n';
-							footer = footer+'--'+boundary02+'--\r\n';
-							footer = footer+'\r\n';
-							footer = footer+'--'+boundary01+'--\r\n';
+							var footer = '\r\n'+'\r\n';
+				    		footer = footer+'--'+separator+'--\r\n';
 							document.getElementById('file').value = document.getElementById('file').value+footer;
 
 							var params = {
@@ -191,24 +179,6 @@ if(isset($_POST['submit'])){
 
 							kbpgp.box(params, function(err, result_string, result_buffer) {
 								document.getElementById('message').value = result_string;
-
-								var wrap='--'+boundary00+'\r\n';
-								wrap = wrap + 'Content-Transfer-Encoding: 8BIT'+'\r\n';
-								wrap = wrap + 'Content-Type: APPLICATION/PGP-ENCRYPTED'+'\r\n';
-								wrap = wrap + '\r\n';
-								wrap = wrap + 'Version: 1'+'\r\n';
-								wrap = wrap + '\r\n';
-								wrap = wrap + '--'+boundary00+'\r\n';
-								wrap = wrap + 'Content-Disposition: attachment;'+'\r\n';
-								wrap = wrap + '	filename=encrypted.asc'+'\r\n';
-								wrap = wrap + 'Content-Type: APPLICATION/OCTET-STREAM;'+'\r\n';
-								wrap = wrap + '	name=encrypted.asc'+'\r\n';
-								wrap = wrap + 'Content-Transfer-Encoding: 8BIT'+'\r\n';
-								wrap = wrap + '\r\n';
-								wrap = wrap+document.getElementById('message').value;
-								wrap = wrap + '\r\n';
-								wrap = wrap + '--'+boundary00+'--\n';
-								document.getElementById('message').value = wrap;
 							});
 						}
 
