@@ -17,7 +17,7 @@ $enable_file_upload = $params->get('enable_file_upload');
 ?>
 
 <?php 
-if(isset($_POST['submit'])){
+if(isset($_POST['btnsubmit'])){
 
 	// We'll need that later 
 	$readonly = 1;
@@ -82,7 +82,7 @@ if(isset($_POST['submit'])){
 	';
 ?>
 
-<form action="/" enctype="multipart/form-data" name="formencryptmessage" method="POST">
+<form enctype="multipart/form-data" name="formencryptmessage" id="formencryptmessage" method="POST">
 	<input type="text" id="yourname" name="yourname" value="<?php echo $yourname; ?>" onClick="this.setSelectionRange(0, this.value.length);" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
 	<input type="text" id="youremail" name="youremail" value="<?php echo $youremail; ?>" onClick="this.setSelectionRange(0, this.value.length);" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
 	<br/><br/>
@@ -97,7 +97,7 @@ if(isset($_POST['submit'])){
 	<!-- END file upload-->
 	<br/>
 	<input style="<?php echo $button_design; ?>" type="button" id="encryptmessage" name="encryptmessage" onclick="encryptMessage();" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_ENC_MESSAGE_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
-	<input style="<?php echo $button_design; ?>" name="submit" type="submit" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_SUBMIT_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/><br/>
+	<input style="<?php echo $button_design; ?>" type="submit" id="btnsubmit" name="btnsubmit" value="<?php echo JText::_('MOD_ENCRYPTEDCONTACT_SUBMIT_BTN');?>" <?php if ($readonly == 1) echo ' DISABLED'; ?>/><br/>
 	<!-- START area to JS-->
 	<?php if ($show_pgp_key == 1) {echo '<br/><br/>'.$show_pgp_text.'<br/>';}?>
 	<textarea name="pgppubkey" id="pgppubkey" style="width: 100%; height: 150px; <?php if ($show_pgp_key != 1) {echo 'display: none;';} ?>" onClick="this.setSelectionRange(0, this.value.length);" READONLY><?php echo $pgppubkey; ?></textarea>
@@ -155,7 +155,17 @@ if(isset($_POST['submit'])){
 
 							kbpgp.box(params, function(err, result_string, result_buffer) {
 								// document.getElementById('file').value = result_buffer;
-								control.files[i] = result_buffer;
+								// control.files[i] = result_buffer;
+
+								var data = new FormData();
+								data.append('upload_file' , result_buffer);
+								var xhr = new XMLHttpRequest();
+								xhr.open( 'POST', '', true );
+								xhr.setRequestHeader('Content-Type', 'multipart/form-data'); 
+								xhr.send(data);
+
+								// var form = document.getElementById('formencryptmessage');
+								// form.submit();
 
 							});
 						}
