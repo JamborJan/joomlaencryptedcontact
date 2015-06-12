@@ -19,7 +19,7 @@ $enable_file_upload = $params->get('enable_file_upload');
 <?php 
 if(isset($_POST['submit'])){
 
-	// We'll ned that later 
+	// We'll need that later 
 	$readonly = 1;
 	$yourname = htmlspecialchars($_POST['yourname']);
 	$youremail = htmlspecialchars($_POST['youremail']);
@@ -36,17 +36,20 @@ if(isset($_POST['submit'])){
 	$recipient = $params->get('email_recipient');
 	$mailer->addRecipient($recipient);
 	if (substr($message, 0, 27 ) != '-----BEGIN PGP MESSAGE-----') {
-		$body = "Name: ".$yourname."\r\n E-Mail: ".$youremail."\r\n\r\n".$message;
+		$body = $message; // $body = "Name: ".$yourname."\r\n E-Mail: ".$youremail."\r\n\r\n".$message; !!!!!!!!!!!! hier muss ein ordentlicher flow her
 	} else {
 		$body = $message;
 	}
 	$mailer->setSubject($params->get('email_subject'));
 	$mailer->setBody($body);
+	$mailer->addAttachment($_FILES['upload_file']['tmp_name'],$_FILES['upload_file']['name']);
+
+	// Send mail
 	$send = $mailer->Send();
 	if ( $send !== true ) {
 	    echo '<p>Sorry your E-Mail was not send. We will try to fix that.</p>';
 	} else {
-    	echo '<p>'.$params->get('thank_you_text').'</p>';
+   	 	echo '<p>'.$params->get('thank_you_text').'</p>';
 	}
 } else {
 	// Fill in default text when page is loaded the first time 
@@ -79,7 +82,7 @@ if(isset($_POST['submit'])){
 	';
 ?>
 
-<form  name="formencryptmessage" method="post">
+<form action="/" enctype="multipart/form-data" name="formencryptmessage" method="POST">
 	<input type="text" id="yourname" name="yourname" value="<?php echo $yourname; ?>" onClick="this.setSelectionRange(0, this.value.length);" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
 	<input type="text" id="youremail" name="youremail" value="<?php echo $youremail; ?>" onClick="this.setSelectionRange(0, this.value.length);" <?php if ($readonly == 1) echo ' DISABLED'; ?>/>
 	<br/><br/>
@@ -87,8 +90,9 @@ if(isset($_POST['submit'])){
 	<br/>
 	<!-- START file upload-->
 	<?php if ($enable_file_upload == 1) {
+		echo '<input type="hidden" name="MAX_FILE_SIZE" value="3000000" />';
 		echo $params->get('upload_text').' <br />';
-		echo '<input type="file" id="upload_file" name="upload_file" size="40">';
+		echo '<input type="file" id="upload_file" name="upload_file" size="40" />';
 	}?>
 	<!-- END file upload-->
 	<br/>
@@ -106,16 +110,6 @@ if(isset($_POST['submit'])){
 <script type="text/javascript" src="modules/mod_encryptedcontact/kbpgp/kbpgp-2.0.8.js"> </script>
 <script type="text/javascript">
 
-	function guid() {
-	  function s4() {
-	    return Math.floor((1 + Math.random()) * 0x10000)
-	      .toString(16)
-	      .substring(1);
-	  }
-	  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-	    s4() + '-' + s4() + s4() + s4();
-	}
-
 	function encryptMessage(){
 
 		var pgppubkey = document.getElementById('pgppubkey').value;
@@ -125,6 +119,17 @@ if(isset($_POST['submit'])){
 		}, function(err, target) {
 		  if (!err) {
 
+			// Encrypt message
+		  	var params = {
+				encrypt_for: target,
+				msg:         'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value
+			};
+
+			kbpgp.box(params, function(err, result_string, result_buffer) {
+				document.getElementById('message').value = result_string;
+			});
+
+			// Encrypt attachment
 			var control = document.getElementById("upload_file");
 			if (control) {
 				var i = 0, files = control.files, len = files.length;
@@ -135,50 +140,23 @@ if(isset($_POST['submit'])){
 			        console.log("Type: " + files[i].type);
 			        console.log("Size: " + files[i].size + " bytes");
 
-			        var separator = guid();
-			        var message = 'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value;
-
-				    var header = 'Content-Type: multipart/mixed; boundary="'+separator +'"'+'\r\n'+'\r\n';
-				    header = header+'Content-Transfer-Encoding: 7bit'+'\r\n';
-				    header = header+'This is a MIME encoded message.'+'\r\n'+'\r\n';
-
-				    // message
-				    header = header+'--'+separator +'\r\n';
-				    header = header+'Content-Type: text/plain; charset="iso-8859-1"'+'\r\n';
-				    header = header+'Content-Transfer-Encoding: 8bit'+'\r\n'+'\r\n';
-				    header = header+message+'\r\n'+'\r\n';
-
-				    // attachment
-				    header = header+'--'+separator +'\r\n';
-				    header = header+'Content-Type: application/octet-stream; name="'+files[i].name+'"'+'\r\n';
-					header = header+'Content-Transfer-Encoding: base64'+'\r\n';
-					header = header+'Content-Disposition: attachment;'+'\r\n';
-					
-				    document.getElementById('file').value = header;
-
 				    if (len == 1) {
 
 						var buffer = "init";
 				    	var reader = new FileReader();
-						reader.onload = function(event) {
-						    var contents = event.target.result;
-						    contents = btoa(contents);
-						    document.getElementById('file').value = document.getElementById('file').value+contents;
-						};
 
 						reader.onloadend = function(event) {
-							
-							var footer = '\r\n'+'\r\n';
-				    		footer = footer+'--'+separator+'--\r\n';
-							document.getElementById('file').value = document.getElementById('file').value+footer;
 
+							var buffer = new kbpgp.Buffer(event.target.result);							
 							var params = {
 					  			encrypt_for: target,
-					  			msg:         document.getElementById('file').value
+					  			msg:         buffer
 							};
 
 							kbpgp.box(params, function(err, result_string, result_buffer) {
-								document.getElementById('message').value = result_string;
+								// document.getElementById('file').value = result_buffer;
+								control.files[i] = result_buffer;
+
 							});
 						}
 
@@ -190,19 +168,7 @@ if(isset($_POST['submit'])){
 
 				    } 
 		    	}
-			} else {
-
-			  	var params = {
-					encrypt_for: target,
-					msg:         'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value
-				};
-
-				kbpgp.box(params, function(err, result_string, result_buffer) {
-					document.getElementById('message').value = result_string;
-				});
-
-			    console.log(err);		  	
-			  }
+			} 
 		  } 
 		});
 
