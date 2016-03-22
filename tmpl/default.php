@@ -1,7 +1,7 @@
-<?php 
+<?php
 /**
  * Encrypted Contact Form for Joomla!
- * 
+ *
  * @package 	mod_encryptedcontact
  * @link 		https://github.com/JamborJan/joomlaencryptedcontact
  * @license 	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html (c) 2015 Jan Jambor, see LICENSE
@@ -16,10 +16,10 @@ $enable_file_upload = $params->get('enable_file_upload');
 
 ?>
 
-<?php 
+<?php
 if(isset($_POST['btnsubmit'])){
 
-	// We'll need that later 
+	// We'll need that later
 	$readonly = 1;
 	$yourname = htmlspecialchars($_POST['yourname']);
 	$youremail = htmlspecialchars($_POST['youremail']);
@@ -28,15 +28,15 @@ if(isset($_POST['btnsubmit'])){
 	// see https://docs.joomla.org/Sending_email_from_extensions
     $mailer = JFactory::getMailer();
     $config = JFactory::getConfig();
-	$sender = array( 
+	$sender = array(
     	$config->get( 'config.mailfrom' ),
     	$config->get( 'config.fromname' )
-    ); 
+    );
 	$mailer->setSender($sender);
 	$recipient = $params->get('email_recipient');
 	$mailer->addRecipient($recipient);
 	if (substr($message, 0, 27 ) != '-----BEGIN PGP MESSAGE-----') {
-		$body = $message; // $body = "Name: ".$yourname."\r\n E-Mail: ".$youremail."\r\n\r\n".$message; !!!!!!!!!!!! hier muss ein ordentlicher flow her
+		$body = "-----\r\nName: ".$yourname."\r\nE-Mail: ".$youremail."\r\n-----\r\n\r\n".$message;
 	} else {
 		$body = $message;
 	}
@@ -52,7 +52,7 @@ if(isset($_POST['btnsubmit'])){
    	 	echo '<p>'.$params->get('thank_you_text').'</p>';
 	}
 } else {
-	// Fill in default text when page is loaded the first time 
+	// Fill in default text when page is loaded the first time
 	$readonly = 0;
 	$yourname = JText::_('MOD_ENCRYPTEDCONTACT_YOUR_NAME');
 	$youremail = JText::_('MOD_ENCRYPTEDCONTACT_YOUR_EMAIL');
@@ -122,7 +122,7 @@ if(isset($_POST['btnsubmit'])){
 			// Encrypt message
 		  	var params = {
 				encrypt_for: target,
-				msg:         'Name: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n\r\n'+document.getElementById('message').value
+				msg:         '-----\r\nName: '+document.getElementById('yourname').value+'\r\n'+'E-Mail: '+document.getElementById('youremail').value+'\r\n-----\r\n\r\n'+document.getElementById('message').value
 			};
 
 			kbpgp.box(params, function(err, result_string, result_buffer) {
@@ -147,7 +147,7 @@ if(isset($_POST['btnsubmit'])){
 
 						reader.onloadend = function(event) {
 
-							var buffer = new kbpgp.Buffer(event.target.result);							
+							var buffer = new kbpgp.Buffer(event.target.result);
 							var params = {
 					  			encrypt_for: target,
 					  			msg:         buffer
@@ -161,7 +161,7 @@ if(isset($_POST['btnsubmit'])){
 								data.append('upload_file' , result_buffer);
 								var xhr = new XMLHttpRequest();
 								xhr.open( 'POST', '', true );
-								xhr.setRequestHeader('Content-Type', 'multipart/form-data'); 
+								xhr.setRequestHeader('Content-Type', 'multipart/form-data');
 								xhr.send(data);
 
 								// var form = document.getElementById('formencryptmessage');
@@ -176,12 +176,12 @@ if(isset($_POST['btnsubmit'])){
 
 						reader.readAsBinaryString(files[i]);
 
-				    } 
+				    }
 		    	}
-			} 
-		  } 
+			}
+		  }
 		});
 
 	}
-	
+
 </script>
